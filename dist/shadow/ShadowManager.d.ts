@@ -1,0 +1,30 @@
+import { ShadowDocument, ShadowUpdateRequest, ShadowUpdateResponse, ShadowCallback, ShadowRollbackRequest, ShadowRollbackResponse } from '../types/shadow';
+import { CallbackManager } from '../callbacks/CallbackManager';
+import { AuditManager } from '../audit/AuditManager';
+import { MqttConnector } from '../mqtt/MqttConnector';
+export declare class ShadowManager {
+    private shadows;
+    private callbackManager;
+    private auditManager;
+    private mqttConnector;
+    private maxObservedVersions;
+    private connectionEpoch;
+    constructor(callbackManager: CallbackManager, auditManager?: AuditManager);
+    setMqttConnector(connector: MqttConnector): void;
+    getAuditManager(): AuditManager;
+    onMqttReconnect(): void;
+    getShadow(thingName: string): ShadowDocument;
+    getOrCreateShadow(thingName: string): ShadowDocument;
+    updateShadow(request: ShadowUpdateRequest): Promise<ShadowUpdateResponse>;
+    rollbackToVersion(request: ShadowRollbackRequest): Promise<ShadowRollbackResponse>;
+    private isStaleMessage;
+    private extractDeltaMetadata;
+    private validateUpdateRequest;
+    deleteShadow(thingName: string): boolean;
+    listThings(): string[];
+    registerCallback(thingName: string, callback: ShadowCallback): string;
+    registerGlobalCallback(callback: ShadowCallback): string;
+    unregisterCallback(registrationId: string): boolean;
+    getShadowCount(): number;
+    getMaxObservedVersion(thingName: string): number | undefined;
+}
